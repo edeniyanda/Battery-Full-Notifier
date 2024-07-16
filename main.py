@@ -7,6 +7,7 @@ from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from pygame import mixer
+
 mixer.init()
 mixer.music.load('battery_charged.mp3')
 
@@ -42,7 +43,6 @@ def set_system_volume_100():
     volume.SetMasterVolumeLevelScalar(1.0, None)
     print("System volume set to 100%")
 
-
 def notifyBattery():
     print(f"\n{APPNAME} now working in the background and will notify you once your PC is fully charged")
     current_percent = 0
@@ -71,14 +71,15 @@ def notifyBattery():
                         sleep(0.2)
                     mixer.music.stop()
                     break
-                elif is_charged == None:
+                elif is_charged is None:
                     sleep(1)
                     print("\n\nYour PC is not Plugged, Plug your PC to use", APPNAME, "then try again")
                     input("\nHit the Enter Key to close: ")
                     break
-            sleep(5)  # Check every 5 seconds
+            sleep(10)  # Check every 10 seconds
         except KeyboardInterrupt:
             break
+
 
 def notifyPercent():
     while True:
