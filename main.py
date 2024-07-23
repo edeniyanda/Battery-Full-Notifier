@@ -90,7 +90,7 @@ def notifyPercent():
         except:
             print("Input must be an INTEGER\n\n")
     print(f"\n{APPNAME} now working in the background and will notify you once your PC reached the terget percentage")
-    sleep(1.5)
+    sleep(.8)
     print("DO NOT close this window, you can minimize the window\n")
     sleep(.8)
     while True:
@@ -98,7 +98,7 @@ def notifyPercent():
         is_charged = battery_status[0]
         percent = battery_status[1]
         if percent:
-            if percent >= targetPercent:
+            if (percent == targetPercent):
                 notify("Battery Reached Target Percentage", f"Battery at {targetPercent}")
                 print(f"Battery has reached {targetPercent}")
                 break
