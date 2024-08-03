@@ -43,6 +43,23 @@ def set_system_volume_100():
     volume.SetMasterVolumeLevelScalar(1.0, None)
     print("System volume set to 100%")
 
+# Get the current volume 
+def get_current_volume():
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(
+        IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    current_volume = volume.GetMasterVolumeLevelScalar()
+    return current_volume
+
+# Set system volume to certain volume
+def set_system_volume(volume_level):
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(
+        IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    volume.SetMasterVolumeLevelScalar(volume_level, None)
+
 def notifyBattery():
     print(f"\n{APPNAME} now working in the background and will notify you once your PC is fully charged")
     current_percent = 0
@@ -64,12 +81,14 @@ def notifyBattery():
                 if is_charged:
                     notify("Battery Fully Charged", "Your battery is fully charged, you can unplug it!")
                     print("\n\nYour PC is fully charged, you can unplug it now")
+                    current_volume = get_current_volume()
                     # Set the system volume to 100%
                     set_system_volume_100()
                     mixer.music.play(-1)
                     while check_battery()[2] == True:
                         sleep(0.2)
                     mixer.music.stop()
+                    set_system_volume(current_volume)
                     break
                 elif is_charged is None:
                     sleep(1)
