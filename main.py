@@ -7,6 +7,7 @@ from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from pygame import mixer
+from datetime import datetime
 
 mixer.init()
 mixer.music.load('battery_charged.mp3')
@@ -73,7 +74,8 @@ def notifyBattery():
             percent = battery_status[1]
             if percent:
                 if current_percent < percent:
-                    print(f"Your Battery is currently at {'.'*50}{percent}%\n")
+                    
+                    print(f"Your Battery is currently at {'.'*50}{percent}% as at {datetime.now():%H:%M:%S (%h, %d)}\n")
                 elif current_percent > percent and current_percent != 0:
                     print(f"WARNING: Your PC is discharging in a funny way\n\nYour Battery is currently at {'.'*50}{percent}%\n")
                 current_percent = percent
