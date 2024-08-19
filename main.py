@@ -5,9 +5,34 @@ from tqdm import trange
 from time import sleep
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, IAudioSessionControl
 from pygame import mixer
 from datetime import datetime
+import pyautogui
+import pygetwindow as gw
+
+# list of media poassible processes
+MEDIA_PROCESSES = [
+    'vlc.exe', 'spotify.exe', 'chrome.exe', 
+    'firefox.exe', 'mpc-hc.exe', 'wmplayer.exe', 
+    'itunes.exe'
+]
+
+def is_media_playing():
+    """
+    Check if any known media player or browser is currently playing audio.
+    """
+    sessions = AudioUtilities.GetAllSessions()
+    for session in sessions:
+        process = session.Process
+        if process and process.name().lower() in MEDIA_PROCESSES:
+            volume = session._ctl.QueryInterface(ISimpleAudioVolume)
+            # Check if the session is playing audio
+            if volume.GetMasterVolume() > 0 and not volume.GetMute():
+                return True
+    return False
+
+
 
 mixer.init()
 mixer.music.load('battery_charged.mp3')
@@ -61,6 +86,31 @@ def set_system_volume(volume_level):
     volume = cast(interface, POINTER(IAudioEndpointVolume))
     volume.SetMasterVolumeLevelScalar(volume_level, None)
 
+def is_media_playing():
+    """
+    Check if any common media player or browser processes are running.
+    """
+    media_processes = ['vlc', 'spotify', 'chrome', 'firefox', 'mpc-hc', 'wmplayer', 'itunes']
+    
+    for process in psutil.process_iter(['name']):
+        if process.info['name'].lower() in media_processes:
+            return True
+    return False
+
+def pause_media():
+    """
+    Pause any currently playing media by sending a spacebar key press.
+    """
+    windows = gw.getAllTitles()
+    media_windows = [title for title in windows if any(player in title for player in ['Spotify', 'YouTube', 'VLC', 'Media Player'])]
+    
+    if media_windows:
+        media_window = gw.getWindowsWithTitle(media_windows[0])[0]
+        media_window.activate()
+        pyautogui.press('space')
+        print(f"Paused media on window: {media_windows[0]}")
+
+
 def notifyBattery():
     print(f"\n{APPNAME} now working in the background and will notify you once your PC is fully charged")
     current_percent = 0
@@ -82,10 +132,11 @@ def notifyBattery():
 
                 if is_charged:
                     notify("Battery Fully Charged", "Your battery is fully charged, you can unplug it!")
-                    print("\n\nYour PC is fully charged, you can unplug it now")
+                    print(f"\n\nYour PC is fully charged, you can unplug it now ,,,at {datetime.now():%H:%M:%S (%h, %d)}")
                     current_volume = get_current_volume()
-                    # Set the system volume to 100%
-                    set_system_volume_100()
+                    if not(is_media_playing()):
+                        # Set the system volume to 100%
+                        set_system_volume_100()
                     mixer.music.play(-1)
                     while check_battery()[2] == True:
                         sleep(0.2)
