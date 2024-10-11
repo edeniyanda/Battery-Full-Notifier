@@ -19,21 +19,29 @@ Ensure you have the following installed on your machine:
 
 1. Clone the repository:  
    Clone the repository to your local machine using the following command:
+   ```bash
    git clone https://github.com/yourusername/Battery-Full-Notifier.git
+    ```
 
 2. Navigate to the project directory:  
    Change to the directory where the repository was cloned:
+   ```bash
    cd Battery-Full-Notifier
+   ```
 
 3. Install the required dependencies:  
    Install the necessary Python packages listed in the requirements.txt file:
+   ```bash
    pip install -r requirements.txt
+   ```
 
 ## How to Run the Script
 
 1. Start the Python Script:  
    Run the main script that monitors the battery and gives a notification when it's fully charged:
-   python main.py
+   ```python 
+    main.py
+    ```
 
 2. Battery Charged Notification:  
    When your device battery reaches 100%, the script will:
