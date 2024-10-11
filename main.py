@@ -136,7 +136,8 @@ def notifyBattery():
                     current_volume = get_current_volume()
                     if not(is_media_playing()):
                         # Set the system volume to 100%
-                        set_system_volume_100()
+                        print("Hey")
+                        # set_system_volume_100()
                     mixer.music.play(-1)
                     while check_battery()[2] == True:
                         sleep(0.2)

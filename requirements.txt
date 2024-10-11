@@ -1,4 +1,9 @@
 psutil==5.8.0
 plyer==2.0.0
 tqdm==4.62.3
+comtypes==1.1.10
+pycaw==20210323
+pygame==2.1.0
+pyautogui==0.9.53
+pygetwindow==0.0.9
 
